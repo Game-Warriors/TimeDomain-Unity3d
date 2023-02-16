@@ -7,6 +7,8 @@ namespace GameWarriors.TimeDomain.Abstraction
 
     public interface ITime
     {
+        bool IsBaseTimeValid { get; }
+        DateTime? RemoteDateTime { get; }
         DateTime BaseUtcNow { get; }
 
         void RegisterTimeUpdateApi(IDateTimeApi item);

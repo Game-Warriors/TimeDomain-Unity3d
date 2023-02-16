@@ -15,12 +15,20 @@ namespace GameWarriors.TimeDomain.Core
         private int _retryCount;
         private int _apiIndex;
 
-
         public event Action<ETimeUpdateState> OnTimeUpdate;
         public bool IsUpdateingTime => _isCheckingTime;
-        public bool IsBaseTimeValid => _minDataTime.HasValue;
-
-        public DateTime BaseDateNow => BaseUtcNow.ToLocalTime();
+        public bool IsBaseTimeValid
+        {
+            get
+            {
+                if (_minDataTime.HasValue)
+                {
+                    TimeSpan timeSpan = _minDataTime.Value - DateTime.UtcNow;
+                    return timeSpan.TotalSeconds < 15;
+                }
+                return false;
+            }
+        }
 
         public DateTime BaseUtcNow
         {
@@ -34,6 +42,8 @@ namespace GameWarriors.TimeDomain.Core
                 return DateTime.UtcNow;
             }
         }
+
+        public DateTime? RemoteDateTime => _minDataTime;
 
         [UnityEngine.Scripting.Preserve]
         public TimeSystem()
@@ -113,7 +123,7 @@ namespace GameWarriors.TimeDomain.Core
         {
             if (_startTimeTable.TryGetValue(key, out var data))
             {
-                data.SetEndDate(BaseUtcNow);
+                return data.EndDate;
             }
             return null;
         }
@@ -166,7 +176,5 @@ namespace GameWarriors.TimeDomain.Core
                 }
             }
         }
-
-
     }
 }
