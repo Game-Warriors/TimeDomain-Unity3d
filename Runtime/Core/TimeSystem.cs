@@ -17,6 +17,7 @@ namespace GameWarriors.TimeDomain.Core
 
         public event Action<ETimeUpdateState> OnTimeUpdate;
         public bool IsUpdateingTime => _isCheckingTime;
+        public int RemoteAndStaticThreshold { get; }
         public bool IsBaseTimeValid
         {
             get
@@ -24,7 +25,7 @@ namespace GameWarriors.TimeDomain.Core
                 if (_minDataTime.HasValue)
                 {
                     TimeSpan timeSpan = _minDataTime.Value - DateTime.UtcNow;
-                    return timeSpan.TotalSeconds < 40;
+                    return timeSpan.TotalSeconds > RemoteAndStaticThreshold;
                 }
                 return false;
             }
@@ -37,7 +38,7 @@ namespace GameWarriors.TimeDomain.Core
                 if (_minDataTime.HasValue)
                 {
                     TimeSpan timeSpan = _minDataTime.Value - DateTime.UtcNow;
-                    return timeSpan.TotalSeconds < 20 ? DateTime.UtcNow : _minDataTime.Value;
+                    return timeSpan.TotalSeconds > RemoteAndStaticThreshold ? DateTime.UtcNow : _minDataTime.Value;
                 }
                 return DateTime.UtcNow;
             }
@@ -46,8 +47,9 @@ namespace GameWarriors.TimeDomain.Core
         public DateTime? RemoteDateTime => _minDataTime;
 
         [UnityEngine.Scripting.Preserve]
-        public TimeSystem()
+        public TimeSystem(ITimeSystemConfig timeSystemConfig)
         {
+            RemoteAndStaticThreshold = timeSystemConfig?.RemoteAndStaticTimeThreshold ?? -30;
             _startTimeTable = new Dictionary<string, ITimeData>();
         }
 
