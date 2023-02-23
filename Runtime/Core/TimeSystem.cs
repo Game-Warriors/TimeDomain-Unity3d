@@ -24,7 +24,7 @@ namespace GameWarriors.TimeDomain.Core
                 if (_minDataTime.HasValue)
                 {
                     TimeSpan timeSpan = _minDataTime.Value - DateTime.UtcNow;
-                    return timeSpan.TotalSeconds < 15;
+                    return timeSpan.TotalSeconds < 40;
                 }
                 return false;
             }
@@ -37,7 +37,7 @@ namespace GameWarriors.TimeDomain.Core
                 if (_minDataTime.HasValue)
                 {
                     TimeSpan timeSpan = _minDataTime.Value - DateTime.UtcNow;
-                    return timeSpan.TotalSeconds < 10 ? DateTime.UtcNow : _minDataTime.Value;
+                    return timeSpan.TotalSeconds < 20 ? DateTime.UtcNow : _minDataTime.Value;
                 }
                 return DateTime.UtcNow;
             }
@@ -175,6 +175,11 @@ namespace GameWarriors.TimeDomain.Core
                     OnTimeUpdate?.Invoke(ETimeUpdateState.Failed);
                 }
             }
+        }
+
+        public void ClearRemoteDate()
+        {
+            _minDataTime = null;
         }
     }
 }

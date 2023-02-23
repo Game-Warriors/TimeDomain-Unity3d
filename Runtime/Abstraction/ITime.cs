@@ -21,5 +21,6 @@ namespace GameWarriors.TimeDomain.Abstraction
         bool HasKey(string key);
         DateTime? FindDate(string key);
         void UpdateBaseTime(bool isForce, int retryCount);
+        void ClearRemoteDate();
     }
 }
