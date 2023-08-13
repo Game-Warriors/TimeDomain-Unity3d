@@ -1,3 +1,6 @@
+  version : 0.1.4
+  fix utc online time updating lower date jitter bug
+
   version : 0.1.3
   add time system configuration
 

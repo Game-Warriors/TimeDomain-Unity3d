@@ -14,6 +14,7 @@ namespace GameWarriors.TimeDomain.Core
         private bool _isCheckingTime;
         private int _retryCount;
         private int _apiIndex;
+        private DateTime _lastValidOnlineDate;
 
         public event Action<ETimeUpdateState> OnTimeUpdate;
         public bool IsUpdateingTime => _isCheckingTime;
@@ -161,7 +162,7 @@ namespace GameWarriors.TimeDomain.Core
             _isCheckingTime = false;
             if (isSuccess)
             {
-                _minDataTime = utc;
+                AppyNewOnlineDate(utc);
                 _retryCount = 0;
                 OnTimeUpdate?.Invoke(ETimeUpdateState.Success);
             }
@@ -182,6 +183,15 @@ namespace GameWarriors.TimeDomain.Core
         public void ClearRemoteDate()
         {
             _minDataTime = null;
+        }
+
+        private void AppyNewOnlineDate(DateTime newUtc)
+        {
+            if (newUtc > _lastValidOnlineDate)
+            {
+                _minDataTime = newUtc;
+                _lastValidOnlineDate = newUtc;
+            }
         }
     }
 }
